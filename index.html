@@ -1,0 +1,53 @@
+<html>
+    <head>
+	    <title>Chat</title>
+	    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+	    <script>
+	    	jQuery(function($) {
+				var socket = io.connect();
+				var $nicknameForm = $('#nicknameForm');
+				var $nicknameInput = $('#givenNickname');
+				var $joinGameForm = $('joinGameForm');
+				var $joinGameID = $('joinGameID');
+				var $joinGamePassword = $('joinGamePassword');
+
+
+				$nicknameForm.submit(function(e) {
+					e.preventDefault();
+					socket.emit('send nickname', {command : 'setNickname', nickname : $nicknameInput.val()});
+					$nicknameInput.val('');
+				})
+
+				$joinGameForm.submit(function(e) {
+					e.preventDefault();
+					socket.emit('attempt to join game', {command : 'joinGame', gameID : $joinGameID.val(), gamePassword : $joinGamePassword.val()});
+					$nicknameInput.val('');
+				})
+			});
+	    </script>
+    </head>
+    <body>
+	    <div id="Page1" class="page" style="">
+	    	<button type="button" onClick = "button1()">Door</button>
+	    	<script>
+	    		function button1(){
+			        socket.emit('button 1 pressed', {button1 : 'pressed'});
+				}
+	    	</script>
+	    	<form id= "nicknameForm">
+	    		<td>Set Nickname</td>
+				<td><input size ="55" id="givenNickname"></input></td>
+				<td><input type = "submit"></input></td>
+			</form>
+			<form id= "joinGameForm">
+				<td>Game ID</td>
+                <td><input size = "55" id="givenGameID"></td>
+                <td>Game Password</td>
+                <td><input size = "55" id="givenGamePassword"></td>
+                <input type = "submit"></input>
+			</form>
+	    </div>
+
+    </body>
+</html>
