@@ -49,11 +49,19 @@
 				})
 
 				socket.on('setCharacter', function(data) {
-					 $("Character").text("You are the " + data);
+					 $("character").text("You are the " + data);
+				})
+
+				socket.on('allowedActions', function(data) {
+					 $("allowedActions").text("You are the " + data);
 				})
 
 				socket.on('revealCard', function(data) {
 					 $("revealCard").text("You are the " + data);
+				})
+
+				socket.on('gameStarted', function(data) {
+					 $("gameStarted").text("You are the " + data);
 				})
 
 				socket.on('gameResults', function(data) {
@@ -64,8 +72,10 @@
 	    </script>
     </head>
     <p>Welcome To Werewolf!!!</p>
-    <p id = "Character">Your Character</p>
+    <p id = "character">Your Character</p>
+    <p id = "allowedActions">Your Character</p>
     <p id = "revealCard">Revealed Cards</p>
+    <p id = "gameStarted">Game Started</p>
     <p id = "gameResults">The Game Results</p>
     <body>
 	    <div id="Page1" class="page" style="" >
