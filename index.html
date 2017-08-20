@@ -6,36 +6,37 @@
 	    <script>
 	    	jQuery(function($) {
 				var socket = io.connect();
-				var $createAccountForm = $('createAccountForm');
-				var $createUsername = $('createUsername');
-				var $createPassword = $('createPassword');
-				var $createRetypedPassword = $('createRetypedPassword');
-				var $signInForm = $('signInForm');
-				var $signInUsername = $('signInUsername');
-				var $signInPassword = $('signInPassword');
+				var $createAccountForm = $('#createAccountForm');
+				var $createUsername = $('#createUsername');
+				var $createPassword = $('#createPassword');
+				var $createRetypedPassword = $('#createRetypedPassword');
+				var $signInForm = $('#signInForm');
+				var $signInUsername = $('#signInUsername');
+				var $signInPassword = $('#signInPassword');
 				var $nicknameForm = $('#nicknameForm');
 				var $nicknameInput = $('#givenNickname');
-				var $joinGameForm = $('joinGameForm');
-				var $joinGameID = $('joinGameID');
-				var $joinGamePassword = $('joinGamePassword');
-				var $hostGameForm = $('hostGameForm');
-				var $hostGameID = $('hostGameID');
-				var $hostGamePassword = $('hostGamePassword');
-				var $hostGameCharacters = $('hostGameCharacters');
+				var $joinGameForm = $('#joinGameForm');
+				var $joinGameID = $('#joinGameID');
+				var $joinGamePassword = $('#joinGamePassword');
+				var $hostGameForm = $('#hostGameForm');
+				var $hostGameID = $('#hostGameID');
+				var $hostGamePassword = $('#hostGamePassword');
+				var $hostGameCharacters = $('#hostGameCharacters');
 
 				$createAccountForm.submit(function(e) {
 					e.preventDefault();
-					socket.emit('createAccount', {'username' : $createUsername.val(), 'password' : $createPassword.val(), 'retpyed password' : $createRetypedPassword.val()});
+					socket.emit('createAccount', {'username' : $createUsername.val(), 'password' : $createPassword.val(), 'retypedPassword' : $createRetypedPassword.val()});
 				})
 
 				$signInForm.submit(function(e) {
 					e.preventDefault();
-					socket.emit('signInt', {'username' : $signInUsername.val(), 'password' : $signInPassword.val()});
+					socket.emit('signIn', {'username' : $signInUsername.val(), 'password' : $signInPassword.val()});
 				})
 
 				$nicknameForm.submit(function(e) {
 					e.preventDefault();
 					socket.emit('setNickname', {'nickname' : $nicknameInput.val()});
+					$nicknameInput.val('');
 				})
 
 				$joinGameForm.submit(function(e) {
@@ -48,49 +49,114 @@
 					socket.emit('hostGame', {'gameID' : $hostGameID.val(), 'gamePassword' : $hostGamePassword.val(), 'inPlay' : $hostGameCharacters.val().split(" ")});
 				})
 
+				socket.on('accountCreated', function(data) {
+					 $("#accountCreated").text("Logged in as: " + data.username);
+					 document.getElementById("createAccountButton").style.display="none";
+					 document.getElementById("signInButton").style.display="none";
+					 document.getElementById("createAccountForm").style.display="none";
+					 document.getElementById("signInForm").style.display="none";
+					 document.getElementById("joinGameButton").style.display="block";
+					 document.getElementById("hostGameButton").style.display="block";
+				})
+
+				socket.on('userSignedIn', function(data) {
+					 $("#userSignedIn").text("Logged in as: " + data.username);
+					 document.getElementById("createAccountButton").style.display="none";
+					 document.getElementById("signInButton").style.display="none";
+					 document.getElementById("createAccountForm").style.display="none";
+					 document.getElementById("signInForm").style.display="none";
+					 document.getElementById("joinGameButton").style.display="block";
+					 document.getElementById("hostGameButton").style.display="block";
+				})
+
+				socket.on('gotNickname', function(data) {
+					 $("#gotNickname").text("New nickname: " + data.nickname);
+				})
+
+				socket.on('hostedGame', function(data) {
+					 $("#hostedGame").text("Now hosting a game: " + data.gameID);
+					 document.getElementById("joinGameButton").style.display="none";
+					 document.getElementById("hostGameButton").style.display="none";
+					 document.getElementById("hostGameForm").style.display="none";
+					 document.getElementById("nicknameForm").style.display="none";
+				})
+
+				socket.on('joinedGame', function(data) {
+					 $("#joinedGame").text("Joined a game: " + data.gameID);
+					 document.getElementById("joinGameButton").style.display="none";
+					 document.getElementById("hostGameButton").style.display="none";
+					 document.getElementById("joinGameForm").style.display="none";
+					 document.getElementById("nicknameForm").style.display="none";
+				})
+
 				socket.on('setCharacter', function(data) {
-					 $("character").text("You are the " + data);
+					 $("#character").text("You are the " + data);
 				})
 
 				socket.on('allowedActions', function(data) {
-					 $("allowedActions").text("You are the " + data);
+					 $("#allowedActions").text("You are the " + data);
 				})
 
 				socket.on('revealCard', function(data) {
-					 $("revealCard").text("You are the " + data);
+					 $("#revealCard").text("You are the " + data);
 				})
 
 				socket.on('gameStarted', function(data) {
-					 $("gameStarted").text("You are the " + data);
+					 $("#gameStarted").text("You are the " + data);
 				})
 
 				socket.on('gameResults', function(data) {
-					 $("gameResults").text("You are the " + data);
+					 $("#gameResults").text("You are the " + data);
 				})
 
 			});
 	    </script>
     </head>
     <p>Welcome To Werewolf!!!</p>
+    <p id = "accountCreated">account created?</p>
+    <p id = "userSignedIn">user signed in?</p>
+    <p id = "gotNickname">nickname?</p>
     <p id = "character">Your Character</p>
-    <p id = "allowedActions">Your Character</p>
+    <p id = "allowedActions">Allowed Actions</p>
     <p id = "revealCard">Revealed Cards</p>
     <p id = "gameStarted">Game Started</p>
     <p id = "gameResults">The Game Results</p>
+    <p id = "hostedGame">hosted game?</p>
+    <p id = "joinedGame">joined game?</p>
     <body>
-	    <div id="Page1" class="page" style="" >
-	    	<button type="button" onClick = "createAcc()">Create Account</button>
+	    <div id="Page1">
+	    	<button id = "createAccountButton" type="button" onClick = "createAcc()">Create Account</button>
 	    	<script>
 	    		function createAcc(){
 			    	document.getElementById("createAccountForm").style.display="block";
 			    	document.getElementById("signInForm").style.display="none";
 				}
 	    	</script>
-	    	<button type="button" onClick = "signIn()">Sign in</button>
+	    	<button id = "signInButton" type="button" onClick = "signIn()">Sign in</button>
 	    	<script>
 	    		function signIn(){
 			    	document.getElementById("signInForm").style.display="block";
 			    	document.getElementById("createAccountForm").style.display="none";
+				}
+	    	</script>
+	    	<button id = "hostGameButton" type="button" onClick = "hostGame()" style="display: none">Host Game</button>
+	    	<script>
+	    		function hostGame(){
+			    	document.getElementById("signInForm").style.display="none";
+			    	document.getElementById("createAccountForm").style.display="none";
+			    	document.getElementById("hostGameForm").style.display="block";
+			    	document.getElementById("joinGameForm").style.display="none";
+			    	document.getElementById("nicknameForm").style.display="block";
+				}
+	    	</script>
+	    	<button id = "joinGameButton" type="button" onClick = "joinGame()" style="display: none">Join Game</button>
+	    	<script>
+	    		function joinGame(){
+			    	document.getElementById("signInForm").style.display="none";
+			    	document.getElementById("createAccountForm").style.display="none";
+			    	document.getElementById("joinGameForm").style.display="block";
+			    	document.getElementById("hostGameForm").style.display="none";
+			    	document.getElementById("nicknameForm").style.display="block";
 				}
 	    	</script>
 	    	<form id= "createAccountForm" style="display: none;">
@@ -116,9 +182,9 @@
 			</form>
 			<form id= "joinGameForm" style="display: none;">
 				<td>Game ID</td>
-                <td><input size = "55" id="givenGameID"></td>
+                <td><input size = "55" id="joinGameID"></td>
                 <td>Game Password</td>
-                <td><input size = "55" id="givenGamePassword" type = "password"></td>
+                <td><input size = "55" id="joinGamePassword" type = "password"></td>
                 <input type = "submit"></input>
 			</form>
 			<form id= "hostGameForm" style="display: none;">
@@ -127,7 +193,7 @@
                 <td>Create a Game Password</td>
                 <td><input size = "55" id="hostGamePassword" type="password"></td>
                 <td>Choose the characters -- all undercase -- space delimitted</td>
-                <td><input size = "1000" id="hostGameCharacters" type="password"></td>
+                <td><input size = "140" id="hostGameCharacters"></td>
                 <input type = "submit"></input>
 			</form>
 	    </div>

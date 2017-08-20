@@ -10,7 +10,23 @@ app.get('/', function(req, res) {
 });
 
 io.sockets.on('connection', function(socket) {
-	socket.on('send username', function(data) {
-		io.sockets.emit('username', data);
+	socket.on('createAccount', function(data) {
+		io.sockets.emit('accountCreated', data);
+	});
+
+	socket.on('signIn', function(data) {
+		io.sockets.emit('userSignedIn', data);
+	});
+
+	socket.on('setNickname', function(data) {
+		io.sockets.emit('gotNickname', data);
+	});
+
+	socket.on('joinGame', function(data) {
+		io.sockets.emit('joinedGame', data);
+	});
+
+	socket.on('hostGame', function(data) {
+		io.sockets.emit('hostedGame', data);
 	});
 })
