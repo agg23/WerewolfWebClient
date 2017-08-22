@@ -100,7 +100,7 @@
 				else if(parsedEvent.command == 'gameUpdate') {
 					charactersInPlay = parsedEvent.inPlay;
 					peoplePlayers = parsedEvent.players;
-					console.log("players: " + charactersInPlay.map(function(item) {return item.name}));
+					console.log("character in play: " + charactersInPlay.map(function(item) {return item.name}));
 					console.log("humans connected: " + peoplePlayers.map(function(item) {return item.id + " : " + item.ready}));
 				}
 				else if(parsedEvent.command == 'characterUpdate') {
@@ -145,18 +145,70 @@
 		};
 	    </script>
 	    <script type="text/babel">
-		var Hello = React.createClass({
-		    render: function() {
-		    	var names = ['Jake', 'Jon', 'Thruster'];
-		        var namesList = charactersInPlay.map(function(name, index){
-		            			return <li key={ index }>{name}</li>;
-		          			})
-		                    
-		        return  <ul>{ namesList }</ul>
-		    }
-		});
- 
-ReactDOM.render(<Hello />, document.getElementById('root'));
+	    	class Toggle extends React.Component {
+		  constructor(props) {
+		    super(props);
+		    this.state = {isToggleOn: false};
+
+		    // This binding is necessary to make `this` work in the callback
+		    this.handleClick = this.handleClick.bind(this);
+		  }
+
+		  handleClick() {
+		    this.setState(prevState => ({
+		      isToggleOn: !prevState.isToggleOn
+		    }));
+		  }
+
+		  render() {
+		    return (
+		      <button onClick={this.handleClick} style={{backgroundColor:(this.state.isToggleOn ? 'grey' : 'white')}}>
+		        {this.state.isToggleOn ? 'ON' : 'OFF'}
+		      </button>
+		    );
+		  }
+		}
+	    ReactDOM.render(
+		  <Toggle />,
+		  document.getElementById('root')
+		);
+
+
+
+
+
+
+		class App extends React.Component {
+		  constructor(props) {
+		    super(props);
+		    this.state = {isToggleOn: false};
+		    this.pages = [{title: 'a', text: 'hello'}, {title: 'b', text: 'world'}];
+
+		    // This binding is necessary to make `this` work in the callback
+		    this.handleClick = this.handleClick.bind(this);
+		  }
+		  handleClick() {
+		    this.setState(prevState => ({
+		      isToggleOn: !prevState.isToggleOn
+		    }));
+		  }
+		  render() {
+		    return (
+		      <div>
+		        {
+		          this.pages.map(function(page) {
+		            return <button >Title: {page.title}. Text: {page.text}</button>;
+		          })
+		        }
+		      </div>
+		    );
+		  }
+		};
+
+		ReactDOM.render(
+		  <App />,
+		  document.getElementById('root2')
+		);
 		</script>
     </head>
     <p>Welcome To Werewolf!!!</p>
