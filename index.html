@@ -197,8 +197,8 @@
 		      <div>
 		        {
 		          this.pages.map(function(page) {
-		            return <button >Title: {page.title}. Text: {page.text}</button>;
-		          })
+		            return <button onClick={this.handleClick} style={{backgroundColor:(this.state.isToggleOn ? 'grey' : 'white')}}>Title: {page.title}. Text: {page.text}</button>;
+		          }, this)
 		        }
 		      </div>
 		    );
