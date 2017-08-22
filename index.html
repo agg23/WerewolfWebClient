@@ -6,7 +6,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
-		<script>
+		<script type="text/babel">
 		var socket = new WebSocket('wss://werewolf.thehome.stream/socket');
 		var createUsername = '';
 		var createPassword = '';
@@ -19,8 +19,12 @@
 		var hostGamePassword = '';
 		var charactersInPlay = [];
 		var peoplePlayers = [];
+		var peoplePlayersNames =[];
 		var hostGameID = '';
 		var clientsCurrentCharacter = '';
+		var cards = [];
+		var checkedArray = [];
+		var submitType = '';
 
 		jQuery(function($) {
 			$( "#readyUpButton" ).click(function() {
@@ -40,6 +44,9 @@
 			});
 			$( "#joinGameButton" ).click(function() {
 				joinGame();
+			});
+			$( "#submitActionsButton" ).click(function() {
+				submitActions();
 			});
 		});
 
@@ -71,6 +78,16 @@
 			joinGamePassword = $('#joinGamePassword').val();
 		   	socket.send(JSON.stringify({'command' : 'joinGame', 'id' : joinGameID, 'password' : joinGamePassword}));
 		}
+		function submitActions(){
+			if(checkedArray.length == 1) {
+				submitType = 'singleSelection';
+			}
+			else if (checkedArray.length == 2) {
+				submitType = 'doubleSelection';
+			}
+		   	socket.send(JSON.stringify({'command' : 'select', 'type' : submitType, 'selections' : checkedArray, 'rotation' : 'null'}));
+		   	console.log(JSON.stringify({'command' : 'select', 'type' : submitType, 'selections' : checkedArray, 'rotation' : 'null'}));
+		}
 
 		// Open the socket
 		socket.onopen = function(event) {
@@ -99,12 +116,102 @@
 				}
 				else if(parsedEvent.command == 'gameUpdate') {
 					charactersInPlay = parsedEvent.inPlay;
+					document.getElementById("root2").innerHTML = "Characters in Play : " + charactersInPlay.map(function(item) {return item.name});
 					peoplePlayers = parsedEvent.players;
+					peoplePlayersNames = peoplePlayers.map(function(item) {return item.nickname});
+					if(cards.length < peoplePlayers.length){
+						cards = [];
+						for (var n = 0; n < peoplePlayers.length; n++) { 
+						    cards.push(n);
+						}
+					}
+
+					class CheckBox extends React.Component {
+
+					    // Input is set as a checkbox, with its ID, value and onChange set as properties
+					    // The properties will be set when each instance is output
+					    render() {
+					        return (
+					            <input type="checkbox" id={this.props.id} value={this.props.value} onChange={this.props.onChange} />
+					        )
+					    }
+
+					}
+
+					class Controls extends React.Component {
+
+					    constructor(props) {
+					        super(props);
+					        this.state= { optionsChecked: [] }
+					    }
+
+					    changeEvent(event) {
+
+					        // Gets the optionsChecked state which is an array by default
+					        checkedArray = this.state.optionsChecked;
+
+					        // Get the value of the checkbox that's been changed
+					        let selectedValue = event.target.value;
+
+					        // If statement to detect whether the checkbox has been selected or deselected
+					        // If it's been selected push the value and updated the state with updated array
+					        // If it's been deselected then remove the value from the array and update the state
+					        if (event.target.checked === true) {
+
+					            checkedArray.push(selectedValue);
+					            this.setState({
+					              optionsChecked: checkedArray
+					            });
+
+					        } else {
+
+					            let valueIndex = checkedArray.indexOf(selectedValue);
+					            checkedArray.splice(valueIndex, 1);
+
+					            this.setState({
+					              optionsChecked: checkedArray
+					            });
+
+					        }
+
+					    }
+
+					    render() {
+					        // Loop to create checkboxes from CheckBox component
+					        // Value property is set to array item value
+					        // ID is set to the array item value_key to keep it unique
+					        // onChange is linked to changeEvent function
+					        let outputCheckboxes = cards.map(function(string, i){
+					            return (<div><CheckBox value={string} id={'string_' + i} onChange={this.changeEvent.bind(this)} /><label htmlFor={'string_' + i}>{string}</label></div>)
+					        }, this);
+
+					        return (
+					            <div>
+					              <div>
+					                  {outputCheckboxes}
+					              </div>
+					              <div>
+					                  {JSON.stringify(this.state.optionsChecked)}
+					              </div>
+					            </div>
+					        )
+					    }
+
+					}
+
+
+					ReactDOM.render(
+							  <Controls />,
+							  document.getElementById('root')
+							);
+
+
 					console.log("character in play: " + charactersInPlay.map(function(item) {return item.name}));
 					console.log("humans connected: " + peoplePlayers.map(function(item) {return item.id + " : " + item.ready}));
 				}
 				else if(parsedEvent.command == 'characterUpdate') {
 					clientsCurrentCharacter = parsedEvent.character;
+					document.getElementById("root3").innerHTML = "I am the character : " + clientsCurrentCharacter.name;
 					console.log("My new character is : " + clientsCurrentCharacter.name);
 				}
 				else if(parsedEvent.command == 'userSignedIn') {
@@ -143,72 +250,6 @@
 			};
 
 		};
-	    </script>
-	    <script type="text/babel">
-	    	class Toggle extends React.Component {
-		  constructor(props) {
-		    super(props);
-		    this.state = {isToggleOn: false};
-
-		    // This binding is necessary to make `this` work in the callback
-		    this.handleClick = this.handleClick.bind(this);
-		  }
-
-		  handleClick() {
-		    this.setState(prevState => ({
-		      isToggleOn: !prevState.isToggleOn
-		    }));
-		  }
-
-		  render() {
-		    return (
-		      <button onClick={this.handleClick} style={{backgroundColor:(this.state.isToggleOn ? 'grey' : 'white')}}>
-		        {this.state.isToggleOn ? 'ON' : 'OFF'}
-		      </button>
-		    );
-		  }
-		}
-	    ReactDOM.render(
-		  <Toggle />,
-		  document.getElementById('root')
-		);
-
-
-
-
-
-
-		class App extends React.Component {
-		  constructor(props) {
-		    super(props);
-		    this.state = {isToggleOn: false};
-		    this.pages = [{title: 'a', text: 'hello'}, {title: 'b', text: 'world'}];
-
-		    // This binding is necessary to make `this` work in the callback
-		    this.handleClick = this.handleClick.bind(this);
-		  }
-		  handleClick() {
-		    this.setState(prevState => ({
-		      isToggleOn: !prevState.isToggleOn
-		    }));
-		  }
-		  render() {
-		    return (
-		      <div>
-		        {
-		          this.pages.map(function(page) {
-		            return <button onClick={this.handleClick} style={{backgroundColor:(this.state.isToggleOn ? 'grey' : 'white')}}>Title: {page.title}. Text: {page.text}</button>;
-		          }, this)
-		        }
-		      </div>
-		    );
-		  }
-		};
-
-		ReactDOM.render(
-		  <App />,
-		  document.getElementById('root2')
-		);
 		</script>
     </head>
     <p>Welcome To Werewolf!!!</p>
@@ -233,6 +274,8 @@
         <p id = "readyUpButton">Ready Up!</p>
 	    </div>
 	    <div id = "root"></div>
-	    <div id= "root2"></div>
+	    <p id = "submitActionsButton">Submit Action</p>
+	    <div id = "root2"></div>
+	    <div id = "root3"></div>
     </body>
 </html>
