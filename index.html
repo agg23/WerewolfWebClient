@@ -110,21 +110,24 @@
 				if(parsedEvent.command == 'accountCreated') {
 					console.log("Logged in as: " + data.username);
 				}
+				else if(parsedEvent.command == 'response' && parsedEvent.task == 'connect') {
+					document.getElementById("root7").innerHTML = "Available Characters : " + parsedEvent.data.availableCharacters;
+				}
 				else if(parsedEvent.command == 'response' && parsedEvent.task == 'hostGame') {
 					hostGameID = parsedEvent.data.id
 					console.log('THIS IS THE GAME ID: ' + hostGameID)
 				}
-				else if(parsedEvent.command == 'gameUpdate') {
+				else if(parsedEvent.command == 'gameUpdate' && (parsedEvent.state == 'night' || parsedEvent.state == 'discussion')) {
+					if (parsedEvent.state == 'discussion') {
+						document.getElementById("root7").innerHTML = "It is now the discussion phase!!!";
+					}
 					charactersInPlay = parsedEvent.inPlay;
 					document.getElementById("root2").innerHTML = "Characters in Play : " + charactersInPlay.map(function(item) {return item.name});
+					document.getElementById("root5").innerHTML = "Game ID : " + hostGameID;
 					peoplePlayers = parsedEvent.players;
 					peoplePlayersNames = peoplePlayers.map(function(item) {return item.nickname});
-					if(cards.length < peoplePlayers.length){
-						cards = [];
-						for (var n = 0; n < peoplePlayers.length; n++) { 
-						    cards.push(n);
-						}
-					}
+					cards = peoplePlayers
+					document.getElementById("root").style.display = "block";
 
 					class CheckBox extends React.Component {
 
@@ -158,7 +161,7 @@
 					        // If it's been deselected then remove the value from the array and update the state
 					        if (event.target.checked === true) {
 
-					            checkedArray.push(selectedValue);
+					            checkedArray.push(parseInt(selectedValue));
 					            this.setState({
 					              optionsChecked: checkedArray
 					            });
@@ -182,7 +185,7 @@
 					        // ID is set to the array item value_key to keep it unique
 					        // onChange is linked to changeEvent function
 					        let outputCheckboxes = cards.map(function(string, i){
-					            return (<div><CheckBox value={string} id={'string_' + i} onChange={this.changeEvent.bind(this)} /><label htmlFor={'string_' + i}>{string}</label></div>)
+					            return (<div><CheckBox value={string.id} id={'string_' + i} onChange={this.changeEvent.bind(this)} /><label htmlFor={'string_' + i}>{"ID : " + string.id + ".  isHuman : " + string.isHuman + ".  nickname : " + string.nickname}</label></div>)
 					        }, this);
 
 					        return (
@@ -212,6 +215,9 @@
 				else if(parsedEvent.command == 'characterUpdate') {
 					clientsCurrentCharacter = parsedEvent.character;
 					document.getElementById("root3").innerHTML = "I am the character : " + clientsCurrentCharacter.name;
+					document.getElementById("root4").innerHTML = "I have seen these cards : " + parsedEvent.seenAssignments.map(function(item) {return item.id + " : " + item.character});
+					document.getElementById("root6").innerHTML = "My Player ID : " + clientsCurrentCharacter.id;
+					console.log("the player id should be SOMETHING??? " + clientsCurrentCharacter.id)
 					console.log("My new character is : " + clientsCurrentCharacter.name);
 				}
 				else if(parsedEvent.command == 'userSignedIn') {
@@ -239,7 +245,7 @@
 					console.log("You are the " + data);
 				}
 				else if(parsedEvent.command == 'gameResults') {
-					console.log("You are the " + data);
+					document.getElementById("root9").innerHTML = "Game Results : " + parsedEvent.assignments.map(function(item) {return item.id + " : " + item.character});
 				}
 				
 			};
@@ -255,27 +261,37 @@
     <p>Welcome To Werewolf!!!</p>
     <body>
 	    <div id="Page1">
-		Username : <input size = "25" id="createUsername">
-        Password : <input size = "25" id="createPassword" type = "password">
-        Retype Password : <input size = "55" id="createRetypedPassword" type="password">
-        <p id = "createAccountButton">SUBMIT THE CREATE ACCOUNT BY CLICKING ON ME</p>
-		Username : <input size = "25" id="signInUsername">
-        Password : <input size = "25" id="signInPassword" type="password">
-        <p id = "signInButton">SUBMIT THE SIGN IN BY CLICKING ON ME</p>
+		<input size = "25" id="createUsername" style = "display: none">
+        <input size = "25" id="createPassword" type = "password" style = "display: none">
+        <input size = "55" id="createRetypedPassword" type="password" style = "display: none">
+        <button id = "createAccountButton" style = "display: none">SUBMIT THE CREATE ACCOUNT BY CLICKING ON ME</button>
+		<input size = "25" id="signInUsername" style = "display: none">
+        <input size = "25" id="signInPassword" type="password" style = "display: none">
+        <button id = "signInButton" style = "display: none">SUBMIT THE SIGN IN BY CLICKING ON ME</button>
 		Set Nickname : <input size ="25" id="givenNickname"></input>
-		<p id = "nicknameButton">SUBMIT THE NICKNAME BY CLICKING ON ME</p>
+		<button id = "nicknameButton">SUBMIT THE NICKNAME BY CLICKING ON ME</button>
+		<br></br>
 		Create a Game Name : <input size = "25" id="hostGameName">
         Create a Game Password : <input size = "25" id="hostGamePassword" type="password">
      	Choose the characters -- all undercase -- space delimitted : <input size = "140" id="hostGameCharacters">
-        <p id = "hostGameButton">SUBMIT THE HOST GAME BY CLICKING ON ME</p>
+        <button id = "hostGameButton">SUBMIT THE HOST GAME BY CLICKING ON ME</button>
+        <br></br>
 		Game ID : <input size = "25" id="joinGameID">
         Game Password : <input size = "25" id="joinGamePassword" type = "password">
-        <p id = "joinGameButton">SUBMIT THE JOIN GAME BY CLICKING ON ME</p>
-        <p id = "readyUpButton">Ready Up!</p>
+        <button id = "joinGameButton">SUBMIT THE JOIN GAME BY CLICKING ON ME</button>
+        <br></br>
+        <button id = "readyUpButton">Ready Up!</button>
 	    </div>
-	    <div id = "root"></div>
-	    <p id = "submitActionsButton">Submit Action</p>
+	    <div id = "root" style = "display: none"></div>
+	    <br></br>
+	    <button id = "submitActionsButton">Submit Action</button>
 	    <div id = "root2"></div>
 	    <div id = "root3"></div>
+	    <div id = "root4"></div>
+	    <div id = "root5"></div>
+	    <div id = "root6"></div>
+	    <div id = "root7"></div>
+	    <div id = "root8"></div>
+	    <div id = "root9"></div>
     </body>
 </html>
