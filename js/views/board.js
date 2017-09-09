@@ -6,7 +6,7 @@ class Board extends React.Component {
 		this.handleClearSelection = this.handleClearSelection.bind(this);
 		this.handleSelection = this.handleSelection.bind(this);
 
-		this.state = {name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, 
+		this.state = {name: gameController.gameName, id: gameController.gameId, gameState: gameController.gameState, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, 
 			seenAssignments: gameController.seenAssignments, selectedPlayers: []};
 	}
 
@@ -17,6 +17,15 @@ class Board extends React.Component {
 					<p>Game Name: {this.state.name}</p>
 					<p>Game ID: {this.state.id}</p>
 					<p>Characters In Play: {this.state.charactersInPlay.toString()}</p>
+					<p>{function(gameState) {
+						switch(gameState) {
+							case "night":
+								return "Night";
+							case "discussion":
+								return "Discussion";
+							case "lobby":
+								return "Final Results";
+						}}(this.state.gameState)}</p>
 					<div>
 						{this.state.players.map(function(player) {
 							if(player.isHuman) {
@@ -30,7 +39,7 @@ class Board extends React.Component {
 								nickname = "Nonhuman " + player.id;
 							}
 
-							let character = gameController.seenCharacterForPlayerId(player.id);
+							let character = this.state.gameState == "lobby" ? gameController.finalCharacterForPlayerId(player.id) : gameController.seenCharacterForPlayerId(player.id);
 
 							if(character == null) {
 								character = "unknown";
@@ -61,7 +70,7 @@ class Board extends React.Component {
 								nickname += " (Me)";
 								character = gameController.character;
 							} else {
-								let seenCharacter = gameController.seenCharacterForPlayerId(player.id);
+								let seenCharacter = this.state.gameState == "lobby" ? gameController.finalCharacterForPlayerId(player.id) : gameController.seenCharacterForPlayerId(player.id);
 
 								if(seenCharacter != null) {
 									character = seenCharacter;
@@ -84,7 +93,11 @@ class Board extends React.Component {
 	}
 
 	handleReady(event) {
-		gameController.submitSelections(this.state.selectedPlayers);
+		if(this.state.gameState == "night") {
+			gameController.submitSelections(this.state.selectedPlayers);
+		} else {
+			gameController.readyUp();
+		}
 	}
 
 	handleClearSelection(event) {
@@ -135,7 +148,7 @@ class Board extends React.Component {
 	}
 
 	updateGameState() {
-		this.setState({name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay,
+		this.setState({name: gameController.gameName, id: gameController.gameId, gameState: gameController.gameState, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay,
 			seenAssignments: gameController.seenAssignments});
 	}
 

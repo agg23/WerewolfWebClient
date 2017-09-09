@@ -19,6 +19,7 @@ class GameController {
 		this.canSelectSelf = false;
 
 		this.seenAssignments = [];
+		this.finalAssignments = [];
 
 		this.authenticationCompleted = this.authenticationCompleted.bind(this);
 		this.connectedGame = this.connectedGame.bind(this);
@@ -89,28 +90,48 @@ class GameController {
 
 	/// Game State
 
-	gameStarted() {
-
-	}
-
 	gameUpdate(state, inPlay, players) {
-		this.gameState = state;
 		this.charactersInPlay = inPlay.map(function(character) {
 			return character.name;
 		});
 		this.players = players;
 
-		console.log(this.gameState);
+		console.log("Entering " + state);
 
-		switch(this.gameState) {
+		switch(state) {
 			case "lobby":
+				if(this.gameState == "discussion") {
+					// Just left discussion, so don't update mode
+					break;
+				}
 				this.view.updateMode("lobby");
 				break;
 			case "night":
 			case "discussion":
+				this.finalAssignments = [];
 				this.view.updateMode("board");
 				break;
 		}
+
+		this.gameState = state;
+
+		this.view.updateGameState();
+	}
+
+	gameResults(assignments) {
+		this.seenAssignments = [];
+
+		for(var i = 0; i < assignments.length; i++) {
+			let assignment = assignments[i];
+
+			if(assignment.id == this.userId) {
+				this.character = assignment.character;
+				break;
+			}
+		}
+		this.lastKnownCharacter = null;
+
+		this.finalAssignments = assignments;
 
 		this.view.updateGameState();
 	}
@@ -133,6 +154,18 @@ class GameController {
 	seenCharacterForPlayerId(id) {
 		for(var i = 0; i < this.seenAssignments.length; i++) {
 			let assignment = this.seenAssignments[i];
+
+			if(assignment.id == id) {
+				return assignment.character;
+			}
+		}
+
+		return null;
+	}
+
+	finalCharacterForPlayerId(id) {
+		for(var i = 0; i < this.finalAssignments.length; i++) {
+			let assignment = this.finalAssignments[i];
 
 			if(assignment.id == id) {
 				return assignment.character;

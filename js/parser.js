@@ -55,7 +55,7 @@ class Parser {
 	}
 
 	parseGameResults(json, socket) {
-
+		this.gameController.gameResults(json.assignments);
 	}
 
 	parseCharacterUpdate(json, socket) {
