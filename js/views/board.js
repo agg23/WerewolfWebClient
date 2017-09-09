@@ -6,7 +6,8 @@ class Board extends React.Component {
 		this.handleClearSelection = this.handleClearSelection.bind(this);
 		this.handleSelection = this.handleSelection.bind(this);
 
-		this.state = {name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, selectedPlayers: []};
+		this.state = {name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, 
+			seenAssignments: gameController.seenAssignments, selectedPlayers: []};
 	}
 
 	render() {
@@ -29,8 +30,14 @@ class Board extends React.Component {
 								nickname = "Nonhuman " + player.id;
 							}
 
+							let character = gameController.seenCharacterForPlayerId(player.id);
+
+							if(character == null) {
+								character = "unknown";
+							}
+
 							return (<div key={player.id}>
-									<Character name="unknown" id={player.id} onClick={this.handleSelection} />
+									<Character name={character} id={player.id} onClick={this.handleSelection} />
 									{nickname}
 								</div>);
 						}.bind(this))}
@@ -53,6 +60,12 @@ class Board extends React.Component {
 								// This card is me
 								nickname += " (Me)";
 								character = gameController.character;
+							} else {
+								let seenCharacter = gameController.seenCharacterForPlayerId(player.id);
+
+								if(seenCharacter != null) {
+									character = seenCharacter;
+								}
 							}
 
 							return (<div key={player.id}>
@@ -87,7 +100,7 @@ class Board extends React.Component {
 
 		if(index !== -1) {
 			// Player previously selected
-			this.setState({selectedPlayers: removeFromArray(selectedPlayers, index)});
+			this.setState({selectedPlayers: this.removeFromArray(selectedPlayers, index)});
 		} else {
 			// Add player to selection (if allowed)
 			let player = gameController.playerForId(id);
@@ -122,7 +135,8 @@ class Board extends React.Component {
 	}
 
 	updateGameState() {
-		this.setState({name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay});
+		this.setState({name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay,
+			seenAssignments: gameController.seenAssignments});
 	}
 
 	/// Convenience

@@ -11,6 +11,11 @@ class Character extends React.Component {
 	    this.state = {name: props.name};
 	}
 
+	// Enables updating the component if props changes
+	componentWillReceiveProps(nextProps) {
+		this.setState({name: nextProps.name});  
+	}
+
 	render() {
 		return (
 			<div onClick={this.handleClick}>

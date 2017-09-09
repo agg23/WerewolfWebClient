@@ -130,6 +130,18 @@ class GameController {
 		this.view.updateGameState();
 	}
 
+	seenCharacterForPlayerId(id) {
+		for(var i = 0; i < this.seenAssignments.length; i++) {
+			let assignment = this.seenAssignments[i];
+
+			if(assignment.id == id) {
+				return assignment.character;
+			}
+		}
+
+		return null;
+	}
+
 	/// Notifications
 
 	authenticationCompleted(json) {
