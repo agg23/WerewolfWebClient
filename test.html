@@ -7,11 +7,26 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
 		<script src="js/socket.js"></script>
 		<script src="js/parser.js"></script>
-		<script type="text/javascript">
+		<script src="js/gamecontroller.js"></script>
+		<script type="text/babel" src="js/views/login.js"></script>
+		<script type="text/babel">
 			var parser = new Parser();
 			var socketController = new SocketController(parser);
+			var gameController = new GameController(socketController);
 
 			socketController.connect("ws://192.168.1.155:8080/socket");
+
+			$(function() {
+				ReactDOM.render(
+					<Login gameController={gameController} />,
+					document.getElementById("root")
+				);
+			});
 		</script>
 	</head>
+	<body>
+		<div id="root">
+
+		</div>
+	</body>
 </html>

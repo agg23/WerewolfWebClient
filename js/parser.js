@@ -1,4 +1,9 @@
 class Parser {
+	constructor() {
+		this.successResponseObservers = {};
+		this.failureResponseObservers = {};
+	}
+
 	parseEvent(event, socket) {
 		if(event.data != '__pong__') {
 			let json = $.parseJSON(event.data);
@@ -10,7 +15,9 @@ class Parser {
 		// TODO: Complete
 		console.log(json);
 
-		switch(json.command) {
+		let command = json.command;
+
+		switch(command) {
 			case "response":
 				this.parseResponse(json, socket);
 				break;
@@ -31,7 +38,9 @@ class Parser {
 	}
 
 	parseResponse(json, socket) {
-
+		// TODO: Parse response
+		let success = json.status == "success";
+		this.notifyResponseObservers(success, json.task, json);
 	}
 
 	/// Game functionality
@@ -50,5 +59,46 @@ class Parser {
 
 	parseCharacterUpdate(json, socket) {
 
+	}
+
+	/// Notifications
+
+	registerSuccessResponseObserver(command, observer) {
+		var observers = this.successResponseObservers[command];
+		if(observers == null) {
+			observers = [];
+		} else {
+			observers.push(observer);
+		}
+
+		this.successResponseObservers[command] = observers;
+	}
+
+	registerFailureResponseObserver(command, observer) {
+		var observers = this.failureResponseObservers[command];
+		if(observers == null) {
+			observers = [];
+		} else {
+			observers.push(observer);
+		}
+
+		this.failureResponseObservers[command] = observers;
+	}
+
+	notifyResponseObservers(success, command, json) {
+		var responseObservers;
+		if(success) {
+			responseObservers = this.successResponseObservers;
+		} else {
+			responseObservers = this.failureResponseObservers;
+		}
+
+		let commandObservers = responseObservers[command];
+
+		if(commandObservers != null && Array.isArray(commandObservers)) {
+			for(observer in commandObservers) {
+				observer.notify(json);
+			}
+		}
 	}
 }

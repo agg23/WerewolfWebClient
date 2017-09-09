@@ -43,4 +43,8 @@ class SocketController {
 			console.log("Client notified socket has closed", event);
 		};
 	}
+
+	send(json) {
+		this.socket.send(JSON.stringify(json));
+	}
 }
