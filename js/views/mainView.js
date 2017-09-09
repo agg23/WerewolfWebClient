@@ -2,18 +2,22 @@ class MainView extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.presentedController = null;
+
 		gameController.view = this;
 
 		this.internalComponent = this.internalComponent.bind(this);
 		this.handleGameIdChange = this.handleGameIdChange.bind(this);
 		this.handleGamePasswordChange = this.handleGamePasswordChange.bind(this);
 	    this.handleJoinGame = this.handleJoinGame.bind(this);
+
+		this.savePresentedReference = this.savePresentedReference.bind(this);
+
 	    this.state = {mode: "login"};
 	}
 
 	render() {
 		return (
-			// TODO: Add game list
 			<div>
 				{this.internalComponent()}
 			</div>
@@ -23,14 +27,16 @@ class MainView extends React.Component {
 	internalComponent() {
 		switch(this.state.mode) {
 			case "login":
-				return <Login presentingController={this} />
-				break;
+				return <Login presentingController={this} ref={this.savePresentedReference} />;
 			case "connectGame":
-				return (<div>
+				return (<div ref={this.savePresentedReference}>
 						<JoinGame presentingController={this} />
 						<HostGame presentingController={this} />
 					</div>);
-				break;
+			case "lobby":
+				return <Lobby presentingController={this} ref={this.savePresentedReference} />;
+			case "board":
+				return <Board presentingController={this} ref={this.savePresentedReference} />;
 		}
 	}
 
@@ -53,9 +59,26 @@ class MainView extends React.Component {
 		gameController.joinGame(this.state.gameId, this.state.password);
 	}
 
-	// External
+	/// Convenience
+
+	savePresentedReference(reference) {
+		console.log(reference);
+		this.presentedController = reference;
+	}
+
+	/// External
 
 	updateMode(mode) {
+		console.info("Updating view to " + mode);
 		this.setState({mode: mode});
+		this.updateGameState();
+	}
+
+	updateGameState() {
+		if(this.presentedController instanceof Lobby) {
+			this.presentedController.updateGameState();
+		} else if(this.presentedController instanceof Board) {
+			this.presentedController.updateGameState();
+		}
 	}
 }

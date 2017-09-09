@@ -4,13 +4,31 @@ class GameController {
 
 		this.availableCharacters = [];
 		this.charactersInPlay = [];
-		this.users = [];
+		this.players = [];
+
+		this.gameId = -1;
+		this.gameName = "Unnammed Game";
+		this.gameState = "lobby";
 
 		this.userId = -1;
+		this.character = "unknown";
+		this.lastKnownCharacter = null;
+
+		this.selectionType = "none";
+		this.selectionCount = 0;
+		this.canSelectSelf = false;
+
+		this.seenAssignments = [];
+
+		this.authenticationCompleted = this.authenticationCompleted.bind(this);
+		this.connectedGame = this.connectedGame.bind(this);
 
 		// Register observers
-		socket.parser.registerSuccessResponseObserver("login", this.authenticationCompleted.bind(this));
-		socket.parser.registerSuccessResponseObserver("register", this.authenticationCompleted.bind(this));
+		socket.parser.registerSuccessResponseObserver("login", this.authenticationCompleted);
+		socket.parser.registerSuccessResponseObserver("register", this.authenticationCompleted);
+
+		socket.parser.registerSuccessResponseObserver("hostGame", this.connectedGame);
+		socket.parser.registerSuccessResponseObserver("joinGame", this.connectedGame);
 	}
 
 	/// User Functions
@@ -51,14 +69,51 @@ class GameController {
 		this.socket.send({"command": "joinGame", "id": id, "password": password});
 	}
 
+	readyUp() {
+		this.socket.send({"command": "ready"});
+	}
+
 	/// Game State
 
 	gameStarted() {
 
 	}
 
-	gameUpdate() {
+	gameUpdate(state, inPlay, players) {
+		this.gameState = state;
+		this.charactersInPlay = inPlay.map(function(character) {
+			return character.name;
+		});
+		this.players = players;
 
+		console.log(this.gameState);
+
+		switch(this.gameState) {
+			case "lobby":
+				this.view.updateMode("lobby");
+				break;
+			case "night":
+			case "discussion":
+				this.view.updateMode("board");
+				break;
+		}
+
+		this.view.updateGameState();
+	}
+
+	/// Player State
+
+	characterUpdate(character, seenAssignments) {
+		this.character = character.name;
+		this.lastKnownCharacter = character.lastKnownName;
+
+		this.selectionType = character.allowedActions.selectionType;
+		this.selectionCount = character.allowedActions.selectionCount;
+		this.canSelectSelf = character.allowedActions.canSelectSelf;
+
+		this.seenAssignments = seenAssignments;
+
+		this.view.updateGameState();
 	}
 
 	/// Notifications
@@ -71,5 +126,13 @@ class GameController {
 
 		// Update view state
 		this.view.updateMode("connectGame");
+	}
+
+	connectedGame(json) {
+		console.info("Game successfully connected");
+
+		this.gameId = json.data.id;
+
+		this.view.updateGameState();
 	}
 }
