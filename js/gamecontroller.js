@@ -32,6 +32,10 @@ class GameController {
 		// TODO: Finish
 	}
 
+	joinGame(id, password) {
+		
+	}
+
 	/// Game State
 
 	gameStarted() {
