@@ -2,6 +2,7 @@ class Parser {
 	constructor() {
 		this.successResponseObservers = {};
 		this.failureResponseObservers = {};
+		this.gameController = null;
 	}
 
 	parseEvent(event, socket) {
@@ -66,7 +67,7 @@ class Parser {
 	registerSuccessResponseObserver(command, observer) {
 		var observers = this.successResponseObservers[command];
 		if(observers == null) {
-			observers = [];
+			observers = [observer];
 		} else {
 			observers.push(observer);
 		}
@@ -77,7 +78,7 @@ class Parser {
 	registerFailureResponseObserver(command, observer) {
 		var observers = this.failureResponseObservers[command];
 		if(observers == null) {
-			observers = [];
+			observers = [observer];
 		} else {
 			observers.push(observer);
 		}
@@ -96,8 +97,8 @@ class Parser {
 		let commandObservers = responseObservers[command];
 
 		if(commandObservers != null && Array.isArray(commandObservers)) {
-			for(observer in commandObservers) {
-				observer.notify(json);
+			for(var i = 0; i < commandObservers.length; i++) {
+				commandObservers[i](json);
 			}
 		}
 	}

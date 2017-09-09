@@ -8,12 +8,9 @@
 		<script src="js/socket.js"></script>
 		<script src="js/parser.js"></script>
 		<script src="js/gamecontroller.js"></script>
+		<script src="js/app.js"></script>
 		<script type="text/babel" src="js/views/login.js"></script>
 		<script type="text/babel">
-			var parser = new Parser();
-			var socketController = new SocketController(parser);
-			var gameController = new GameController(socketController);
-
 			socketController.connect("ws://192.168.1.155:8080/socket");
 
 			$(function() {
