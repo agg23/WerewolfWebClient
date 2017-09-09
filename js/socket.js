@@ -45,6 +45,7 @@ class SocketController {
 	}
 
 	send(json) {
-		this.socket.send(JSON.stringify(json));
+		let string = JSON.stringify(json);
+		this.socket.send(string);
 	}
 }

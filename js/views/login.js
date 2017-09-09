@@ -1,11 +1,8 @@
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.gameController = props.gameController;
 
-		if(this.gameController == null) {
-			console.log("ERROR: Created Login component without required game controller");
-		}
+		this.presentingController = this.props.presentingController;
 
 		this.handleUsernameChange = this.handleUsernameChange.bind(this);
 		this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -36,6 +33,6 @@ class Login extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		this.gameController.login(this.state.username, this.state.password);
+		gameController.login(this.state.username, this.state.password);
 	}
 }

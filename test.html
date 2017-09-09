@@ -11,14 +11,17 @@
 		<script src="js/app.js"></script>
 		<script type="text/babel" src="js/views/login.js"></script>
 		<script type="text/babel" src="js/views/popup/popup.js"></script>
-		<script type="text/babel" src="js/views/popup/joinGame.js"></script>
+		<script type="text/babel" src="js/views/game/character.js"></script>
+		<script type="text/babel" src="js/views/joinGame.js"></script>
+		<script type="text/babel" src="js/views/hostGame.js"></script>
 		<script type="text/babel" src="js/views/lobby.js"></script>
+		<script type="text/babel" src="js/views/mainView.js"></script>
 		<script type="text/babel">
 			socketController.connect("ws://192.168.1.155:8080/socket");
 
 			$(function() {
 				ReactDOM.render(
-					<Lobby gameController={gameController} />,
+					<MainView/>,
 					document.getElementById("root")
 				);
 			});

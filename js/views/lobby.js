@@ -1,11 +1,6 @@
 class Lobby extends React.Component {
 	constructor(props) {
 		super(props);
-		this.gameController = props.gameController;
-
-		if(this.gameController == null) {
-			console.log("ERROR: Created Login component without required game controller");
-		}
 
 		this.handleJoinGame = this.handleJoinGame.bind(this);
 
@@ -34,7 +29,7 @@ class Lobby extends React.Component {
 	handleJoinGame(event) {
 		// TODO: Call displayPopup() with join game component
 		// let joinGame = new JoinGame({gameController: this.gameController});
-		let joinGame = <JoinGame gameController={this.gameController} />
+		let joinGame = <JoinGame />
 		this.displayPopup(joinGame);
 	}
 
