@@ -73,6 +73,20 @@ class GameController {
 		this.socket.send({"command": "ready"});
 	}
 
+	submitSelections(selections) {
+		var selectionType;
+		if(selections.length == 1) {
+			selectionType = "singleSelection";
+		} else if (selections.length == 2) {
+			selectionType = "doubleSelection";
+		} else {
+			console.error("Attempted to send incorrect number of actions");
+			return;
+		}
+
+	   	this.socket.send({"command": "select", "type": selectionType, "selections": selections, "rotation": null});
+	}
+
 	/// Game State
 
 	gameStarted() {
@@ -134,5 +148,19 @@ class GameController {
 		this.gameId = json.data.id;
 
 		this.view.updateGameState();
+	}
+
+	/// Convenience
+
+	playerForId(id) {
+		for(var i = 0; i < this.players.length; i++) {
+			let player = this.players[i];
+
+			if(player.id == id) {
+				return player;
+			}
+		}
+
+		return null;
 	}
 }

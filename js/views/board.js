@@ -4,8 +4,9 @@ class Board extends React.Component {
 
 		this.handleReady = this.handleReady.bind(this);
 		this.handleClearSelection = this.handleClearSelection.bind(this);
+		this.handleSelection = this.handleSelection.bind(this);
 
-		this.state = {name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay};
+		this.state = {name: gameController.gameName, id: gameController.gameId, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, selectedPlayers: []};
 	}
 
 	render() {
@@ -28,11 +29,11 @@ class Board extends React.Component {
 								nickname = "Nonhuman " + player.id;
 							}
 
-							return (<div>
-									<Character name="unknown" />
+							return (<div key={player.id}>
+									<Character name="unknown" id={player.id} onClick={this.handleSelection} />
 									{nickname}
 								</div>);
-						})}
+						}.bind(this))}
 					</div>
 					<div>
 						{this.state.players.map(function(player) {
@@ -54,11 +55,11 @@ class Board extends React.Component {
 								character = gameController.character;
 							}
 
-							return (<div>
-									<Character name={character} />
+							return (<div key={player.id}>
+									<Character name={character} id={player.id} onClick={this.handleSelection} />
 									{nickname}
 								</div>);
-						})}
+						}.bind(this))}
 					</div>
 				</div>
 				<div>
@@ -70,12 +71,50 @@ class Board extends React.Component {
 	}
 
 	handleReady(event) {
-		// TODO: Finish
-		gameController.readyUp();
+		gameController.submitSelections(this.state.selectedPlayers);
 	}
 
 	handleClearSelection(event) {
 		// TODO: Finish
+	}
+
+	handleSelection(character) {
+		let id = character.id;
+
+		let selectedPlayers = this.state.selectedPlayers;
+
+		let index = selectedPlayers.indexOf(id);
+
+		if(index !== -1) {
+			// Player previously selected
+			this.setState({selectedPlayers: removeFromArray(selectedPlayers, index)});
+		} else {
+			// Add player to selection (if allowed)
+			let player = gameController.playerForId(id);
+
+			if(player == null ||
+				this.state.selectedPlayers.length + 1 > gameController.selectionCount ||
+				gameController.selectionType == "none" ||
+				(gameController.selectionType == "humanOnly" && !player.isHuman) ||
+				(gameController.selectionType == "nonHumanOnly" && player.isHuman) ||
+				(!gameController.canSelectSelf && id == gameController.userId)) {
+					// Do nothing
+					return;
+			}
+
+			selectedPlayers.push(id);
+
+			if(selectedPlayers.length == gameController.selectionCount) {
+				// TODO: Enable ready button
+			} else {
+				// TODO: Disable ready button
+			}
+
+			this.setState({selectedPlayers: selectedPlayers});
+		}
+
+		console.log("Selected player " + id);
+		console.log(this.state.selectedPlayers);
 	}
 
 	displayPopup(popup) {
@@ -92,5 +131,14 @@ class Board extends React.Component {
 		return gameController.players.sort(function(lhs, rhs) {
 			return lhs.id - rhs.id;
 		});
+	}
+
+	/// Convenience
+
+	removeFromArray(array, index) {
+	    if (index !== -1) {
+	        array.splice(index, 1);
+	    }
+	    return array;
 	}
 }
