@@ -46,12 +46,8 @@ class Parser {
 
 	/// Game functionality
 
-	parseGameStarted(json, socket) {
-
-	}
-
 	parseGameUpdate(json, socket) {
-		this.gameController.gameUpdate(json.state, json.inPlay, json.players);
+		this.gameController.gameUpdate(json.id, json.state, json.inPlay, json.players);
 	}
 
 	parseGameResults(json, socket) {

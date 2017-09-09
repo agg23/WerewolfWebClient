@@ -2,6 +2,8 @@ class Lobby extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.presentingController = this.props.presentingController;
+
 		this.handleReady = this.handleReady.bind(this);
 		this.handleLeaveGame = this.handleLeaveGame.bind(this);
 

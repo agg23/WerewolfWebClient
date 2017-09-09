@@ -90,7 +90,7 @@ class GameController {
 
 	/// Game State
 
-	gameUpdate(state, inPlay, players) {
+	gameUpdate(id, state, inPlay, players) {
 		this.charactersInPlay = inPlay.map(function(character) {
 			return character.name;
 		});
@@ -116,6 +116,10 @@ class GameController {
 		this.gameState = state;
 
 		this.view.updateGameState();
+
+		// Explicitly don't update id until after view has been updated
+		// This prevents users from seeing the wrong id at the end of a game
+		this.gameId = id;
 	}
 
 	gameResults(assignments) {

@@ -2,9 +2,12 @@ class Board extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.presentingController = this.props.presentingController;
+
 		this.handleReady = this.handleReady.bind(this);
 		this.handleClearSelection = this.handleClearSelection.bind(this);
 		this.handleSelection = this.handleSelection.bind(this);
+		this.handleExitLobby = this.handleExitLobby.bind(this);
 
 		this.state = {name: gameController.gameName, id: gameController.gameId, gameState: gameController.gameState, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, 
 			seenAssignments: gameController.seenAssignments, selectedPlayers: []};
@@ -85,8 +88,16 @@ class Board extends React.Component {
 					</div>
 				</div>
 				<div>
-					<button onClick={this.handleReady}>Ready Up</button>
-					<button onClick={this.handleClearSelection}>Clear Selections</button>
+					{function(board, state) {
+						if(state == "lobby") {
+							return (<button onClick={board.handleExitLobby}>Exit To Lobby</button>)
+						} else {
+							return (<div>
+									<button onClick={board.handleReady}>Ready Up</button>
+									<button onClick={board.handleClearSelection}>Clear Selections</button>
+								</div>)
+						}
+					}(this, this.state.gameState)}
 				</div>
 			</div>
 		);
@@ -143,8 +154,8 @@ class Board extends React.Component {
 		console.log(this.state.selectedPlayers);
 	}
 
-	displayPopup(popup) {
-		this.setState({showPopup: true, popup: popup});
+	handleExitLobby(event) {
+		this.presentingController.updateMode("lobby");
 	}
 
 	updateGameState() {
