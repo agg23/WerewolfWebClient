@@ -60,7 +60,17 @@ class HostGame extends React.Component {
 		var characters = this.state.charactersInPlayIndexes.map(function(index) {
 			return gameController.availableCharacters[index];
 		});
-		// TODO: Finish
+
+		if(this.state.name == "") {
+			alert("Please provide a game name");
+			return;
+		}
+
+		if(characters.length < 4) {
+			alert("Please provide at least 4 characters");
+			return;
+		}
+		
 		gameController.hostGame(this.state.name, this.state.password, characters);
 	}
 

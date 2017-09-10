@@ -166,6 +166,11 @@ class GameController {
 
 		this.selectionType = character.allowedActions.selectionType;
 		this.selectionCount = character.allowedActions.selectionCount;
+
+		if(this.selectionCount == null) {
+			this.selectionCount = 0;
+		}
+
 		this.canSelectSelf = character.allowedActions.canSelectSelf;
 
 		this.seenAssignments = seenAssignments;
