@@ -6,17 +6,8 @@
 }
 
 .characterContainer {
-	flex: 1;
 	position: relative;
 	display: inline-block;
-}
-
-.characterContainer:first-child {
-	flex: 2;
-}
-
-.characterContainer:last-child {
-	flex: 2;
 }
 
 .character {
@@ -31,8 +22,8 @@
 	display: inline-block;
 	background-size: 100% 100%;
 	/*color: white;*/
-	max-width: 241;
-	max-height: 382;
+	max-width: 241px;
+	max-height: 382px;
 	width: 20vw;
 	height: 32vw;
 	margin: 10 10 10 10;
@@ -55,8 +46,16 @@
 	text-align: center;
 }
 
-.nonhumanCharacters {
-	display: flex;
+.characters {
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+/*.nonhumanCharacters {
+	display: table;
 	flex-direction: row;
 	align-items: flex-start;
 	width: 100%;
@@ -67,4 +66,19 @@
 	flex-direction: row;
 	align-items: flex-start;
 	width: 100%;
+}
+*/
+.characterDisplay {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.characterDisplay .characterContainer {
+	width: 20%;
+	box-sizing: border-box;
+}
+
+.characterDisplay .characterCard {
+	max-width: 120px;
+	max-height: 191px;
 }
