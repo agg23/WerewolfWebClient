@@ -97,6 +97,47 @@ class Board extends React.Component {
 						}.bind(this))}
 					</div>
 				</div>
+				<div className="selectionText">
+					{function(board) {
+						// TODO: Clean up code
+						if(gameController.gameState == "lobby") {
+							return;
+						} else if(gameController.gameState == "discussion") {
+							return "Ready up to leave discussion phase and see final results. Do not ready until you've voted!";
+						}
+
+						if(gameController.selectionCount == 0) {
+							return "No selections are required. Ready up to complete your turn.";
+						} else {
+							var selectionText = "";
+
+							if(gameController.selectionCount == 1) {
+								selectionText = "1 selection";
+							} else {
+								// Must be two selections
+								selectionText = "2 selections";
+							}
+
+							selectionText += " required.";
+
+							if(gameController.selectionType == "humanOnly") {
+								selectionText += " Selections may be made only from other players";
+							} else if(gameController.selectionType == "nonHumanOnly") {
+								selectionText += " Selections may be made only from the center cards";
+							} else {
+								selectionText += " Selections may be made from either the center cards or other players";
+							}
+
+							if(gameController.canSelectSelf) {
+								selectionText += ", including yourself.";
+							} else {
+								selectionText += ".";
+							}
+
+							return selectionText;
+						}
+					}(this)}
+				</div>
 				<div>
 					{function(board, state) {
 						if(state == "lobby") {
@@ -118,7 +159,7 @@ class Board extends React.Component {
 		}
 	}
 
-	handleSelection(character) {
+	handleSelection(character, div) {
 		let id = character.id;
 
 		let selectedPlayers = this.state.selectedPlayers;
@@ -128,6 +169,7 @@ class Board extends React.Component {
 		if(index !== -1) {
 			// Player previously selected
 			this.setState({selectedPlayers: this.removeFromArray(selectedPlayers, index)});
+			div.removeClass("selected");
 		} else {
 			// Add player to selection (if allowed)
 			let player = gameController.playerForId(id);
@@ -143,6 +185,7 @@ class Board extends React.Component {
 			}
 
 			selectedPlayers.push(id);
+			div.addClass("selected");
 
 			this.setState({selectedPlayers: selectedPlayers});
 		}
@@ -167,6 +210,9 @@ class Board extends React.Component {
 	selectionSuccess(json) {
 		console.log("Selection completed successfully");
 		this.setState({selectedPlayers: []});
+
+		// Deselect all cards
+		$(".selected").removeClass("selected");
 	}
 
 	selectionFailure(json) {
