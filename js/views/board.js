@@ -5,7 +5,6 @@ class Board extends React.Component {
 		this.presentingController = this.props.presentingController;
 
 		this.handleReady = this.handleReady.bind(this);
-		this.handleClearSelection = this.handleClearSelection.bind(this);
 		this.handleSelection = this.handleSelection.bind(this);
 		this.handleExitLobby = this.handleExitLobby.bind(this);
 
@@ -13,7 +12,7 @@ class Board extends React.Component {
 		this.selectionFailure = this.selectionFailure.bind(this);
 
 		this.state = {name: gameController.gameName, id: gameController.gameId, gameState: gameController.gameState, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, 
-			seenAssignments: gameController.seenAssignments, selectedPlayers: []};
+			seenAssignments: gameController.seenAssignments, selectedPlayers: [], readyEnabled: gameController.selectionCount == 0};
 	}
 
 	componentDidMount() {
@@ -109,10 +108,7 @@ class Board extends React.Component {
 						if(state == "lobby") {
 							return (<button onClick={board.handleExitLobby}>Exit To Lobby</button>)
 						} else {
-							return (<div>
-									<button onClick={board.handleReady}>Ready Up</button>
-									<button onClick={board.handleClearSelection}>Clear Selections</button>
-								</div>)
+							return (<button onClick={board.handleReady} disabled={!board.state.readyEnabled}>Ready Up</button>)
 						}
 					}(this, this.state.gameState)}
 				</div>
@@ -126,10 +122,6 @@ class Board extends React.Component {
 		} else {
 			gameController.readyUp();
 		}
-	}
-
-	handleClearSelection(event) {
-		// TODO: Finish
 	}
 
 	handleSelection(character) {
@@ -158,14 +150,10 @@ class Board extends React.Component {
 
 			selectedPlayers.push(id);
 
-			if(selectedPlayers.length == gameController.selectionCount) {
-				// TODO: Enable ready button
-			} else {
-				// TODO: Disable ready button
-			}
-
 			this.setState({selectedPlayers: selectedPlayers});
 		}
+
+		this.setState({readyEnabled: selectedPlayers.length == gameController.selectionCount});
 
 		console.log("Selected player " + id);
 		console.log(this.state.selectedPlayers);
