@@ -13,16 +13,16 @@ class HostGame extends React.Component {
 
 	render() {
 		return (
-			// TODO: Add game list
-			<div>
-				<input onChange={this.handleGameNameChange}/>
-				<input onChange={this.handleGamePasswordChange}/>
+			<div className="hostGame halfBlock">
+				<h3>Host Game</h3>
+				Game Name: <input onChange={this.handleGameNameChange}/>
+				Game Password: <input onChange={this.handleGamePasswordChange} type="password"/>
+				<button onClick={this.handleHostGame}>Host Game</button>
 				<div className="characterDisplay">
 					{gameController.availableCharacters.map(function(item, index) {
 						return <Character character={item} id={index} key={index} onClick={this.handleCharacterSelect} />
 					}.bind(this))}
 				</div>
-				<button onClick={this.handleHostGame}>Host Game</button>
 			</div>
 		);
 	}

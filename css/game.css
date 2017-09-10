@@ -9,13 +9,7 @@ h2 {
 	text-align: center;
 }
 
-.login {
-	display: inline-block;
-	width: 50%;
-	vertical-align: top;
-}
-
-.register {
+.halfBlock {
 	display: inline-block;
 	width: 50%;
 	vertical-align: top;

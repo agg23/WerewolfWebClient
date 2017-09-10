@@ -17,7 +17,8 @@ class JoinGame extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<div className="joinGame halfBlock">
+				<h3>Join Game</h3>
 				<table>
 					<thead>
 						<tr>
@@ -26,6 +27,7 @@ class JoinGame extends React.Component {
 							<th>Users</th>
 							<th>Stage</th>
 							<th>Password</th>
+							<th><button onClick={this.fetchGameList}>Reload Games</button></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -52,9 +54,9 @@ class JoinGame extends React.Component {
 						}.bind(this))}
 					</tbody>
 				</table>
-				<input onChange={this.handleGameIdChange}/>
-				<input onChange={this.handleGamePasswordChange}/>
-				<button onClick={this.handleJoinGame}>Join Game</button>
+				<h4>Manual Game Entry:</h4>
+				Game ID: <input onChange={this.handleGameIdChange}/>
+				Game Password: <input onChange={this.handleGamePasswordChange} type="password"/><button onClick={this.handleJoinGame}>Join Game</button>
 			</div>
 		);
 	}

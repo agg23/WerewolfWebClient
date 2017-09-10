@@ -14,14 +14,14 @@ class Register extends React.Component {
 
 	render() {
 		return (
-			<div className="register">
+			<div className="register halfBlock">
 				<h3>Register</h3>
 				<form onSubmit={this.handleSubmit}>
 					Username: <input onChange={this.handleUsernameChange}/>
-					<p>Password: <input onChange={this.handlePasswordChange}/></p>
-					<p>Confirm Password: <input onChange={this.handleConfirmPasswordChange}/></p>
-					<p>Nickname: <input onChange={this.handleNicknameChange}/></p>
-					<button>Register</button>
+					<p>Password: <input onChange={this.handlePasswordChange} type="password"/></p>
+					<p>Confirm Password: <input onChange={this.handleConfirmPasswordChange} type="password"/></p>
+					<p>Nickname: <input onChange={this.handleNicknameChange}/>
+						<button>Register</button></p>
 		        </form>
 			</div>
 		);
