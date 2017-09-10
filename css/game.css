@@ -13,11 +13,13 @@ h2 {
 	display: inline-block;
 	width: 50%;
 	vertical-align: top;
+	min-width: 350px;
 }
 
 .characterContainer {
 	position: relative;
 	display: inline-block;
+	/*margin: 10px 10px 10px 10px;*/
 }
 
 .character {
@@ -25,6 +27,10 @@ h2 {
 	margin-left: auto;
 	margin-right: auto;
 	padding: 0 0 0 0;
+}
+
+.character.selected {
+	background-color: blue;
 }
 
 .characterCard {
@@ -84,7 +90,7 @@ h2 {
 }
 
 .characterDisplay .characterContainer {
-	width: 20%;
+	width: 30%;
 	box-sizing: border-box;
 }
 

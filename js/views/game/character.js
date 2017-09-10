@@ -35,6 +35,6 @@ class Character extends React.Component {
 	}
 
 	handleClick(event) {
-		this.props.onClick(this);
+		this.props.onClick(this, $(event.target).closest(".character"));
 	}
 }

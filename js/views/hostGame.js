@@ -35,7 +35,7 @@ class HostGame extends React.Component {
 		this.setState({password: event.target.value});
 	}
 
-	handleCharacterSelect(character) {
+	handleCharacterSelect(character, div) {
 		let charactersInPlayIndexes = this.state.charactersInPlayIndexes;
 		let id = character.id;
 
@@ -44,9 +44,11 @@ class HostGame extends React.Component {
 		if(index !== -1) {
 			// Remove character
 			this.state.charactersInPlayIndexes = this.removeFromArray(charactersInPlayIndexes, index);
+			div.removeClass("selected");
 		} else {
 			// Add character
 			this.state.charactersInPlayIndexes.push(id);
+			div.addClass("selected");
 		}
 
 		console.log("Selected character " + id);
