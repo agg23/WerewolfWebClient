@@ -98,7 +98,7 @@ class JoinGame extends React.Component {
 	}
 
 	fetchGameList() {
-		let url = "http://" + gameController.server + "/availableGames";
+		let url = "https://" + gameController.server + "/availableGames";
 		$.get(url, function(data, status) {
 			if(status == "success") {
 				this.setState({games: data});
