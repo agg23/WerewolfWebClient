@@ -28,6 +28,7 @@ class MainView extends React.Component {
 		switch(this.state.mode) {
 			case "login":
 				return (<div ref={this.savePresentedReference}>
+						<h2>Werewolf Online</h2>
 						<Login presentingController={this} />
 						<Register presentingController={this} />
 					</div>);

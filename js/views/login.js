@@ -12,11 +12,11 @@ class Login extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<div className="login">
 				<h3>Login</h3>
 				<form onSubmit={this.handleSubmit}>
-					<input onChange={this.handleUsernameChange}/>
-					<input onChange={this.handlePasswordChange}/>
+					Username: <input onChange={this.handleUsernameChange}/>
+					<p>Password: <input onChange={this.handlePasswordChange}/></p>
 					<button>Login</button>
 		        </form>
 			</div>

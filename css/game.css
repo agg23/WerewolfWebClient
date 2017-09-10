@@ -5,6 +5,22 @@
 	margin: auto;
 }
 
+h2 {
+	text-align: center;
+}
+
+.login {
+	display: inline-block;
+	width: 50%;
+	vertical-align: top;
+}
+
+.register {
+	display: inline-block;
+	width: 50%;
+	vertical-align: top;
+}
+
 .characterContainer {
 	position: relative;
 	display: inline-block;
