@@ -1,12 +1,14 @@
 class SocketController {
-	constructor(parser) {
+	constructor(parser, server, unsecure) {
 		this.parser = parser;
+
+		let protocol = unsecure ? "ws://" : "wss://";
+		this.url = protocol + server + "/socket";
 	}
 
-	connect(url) {
+	connect() {
 		console.log("Connect");
-		this.url = url;
-		this.socket = new WebSocket(url);
+		this.socket = new WebSocket(this.url);
 
 		this.open();
 	}

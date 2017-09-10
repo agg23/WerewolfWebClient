@@ -1,6 +1,7 @@
 class GameController {
-	constructor(socket) {
+	constructor(socket, server) {
 		this.socket = socket;
+		this.server = server;
 
 		this.availableCharacters = [];
 		this.charactersInPlay = [];
@@ -63,6 +64,10 @@ class GameController {
 		if(id == null || id < 0) {
 			console.warn("Attempted to join game with invalid id");
 			return;
+		}
+
+		if(password == "") {
+			password = null;
 		}
 
 		console.log("Attempting to join game with id " + id);

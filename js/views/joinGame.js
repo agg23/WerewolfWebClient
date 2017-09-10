@@ -6,13 +6,17 @@ class JoinGame extends React.Component {
 		
 		this.handleGameIdChange = this.handleGameIdChange.bind(this);
 		this.handleGamePasswordChange = this.handleGamePasswordChange.bind(this);
-	    this.handleJoinGame = this.handleJoinGame.bind(this);
-	    this.state = {gameId: -1, password: ""};
+		this.handleJoinGame = this.handleJoinGame.bind(this);
+		this.handleJoinListGame = this.handleJoinListGame.bind(this);
+		this.fetchGameList = this.fetchGameList.bind(this);
+		this.gameForId = this.gameForId.bind(this);
+		this.state = {gameId: -1, password: "", games: []};
+
+		this.fetchGameList();
 	}
 
 	render() {
 		return (
-			// TODO: Add game list
 			<div>
 				<table>
 					<thead>
@@ -20,18 +24,32 @@ class JoinGame extends React.Component {
 							<th>ID</th>
 							<th>Name</th>
 							<th>Users</th>
-							<th>Date</th>
-							<th>Requires Password</th>
+							<th>Stage</th>
+							<th>Password</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>0</td>
-							<td>Fake Game</td>
-							<td>2</td>
-							<td>Today</td>
-							<td>True</td>
-						</tr>
+						{this.state.games.map(function(game, index) {
+							return (<tr key={index}>
+									<td>{game.id}</td>
+									<td>{game.name}</td>
+									<td>{game.userCount}</td>
+									<td>{function(state) {
+										switch(state) {
+											case "starting":
+												return "Starting";
+											case "lobby":
+												return "Lobby";
+											case "night":
+												return "Night";
+											case "discussion":
+												return "Discussion";
+										}
+									}(game.state)}</td>
+									<td>{game.passwordProtected ? "True" : "False"}</td>
+									<td><button id={game.id} onClick={this.handleJoinListGame}>Join</button></td>
+								</tr>)
+						}.bind(this))}
 					</tbody>
 				</table>
 				<input onChange={this.handleGameIdChange}/>
@@ -58,5 +76,47 @@ class JoinGame extends React.Component {
 
 	handleJoinGame(event) {
 		gameController.joinGame(this.state.gameId, this.state.password);
+	}
+
+	handleJoinListGame(event) {
+		let id = event.target.id;
+
+		var password = null;
+		let game = this.gameForId(id);
+		if(game != null && game.passwordProtected) {
+			password = prompt("Enter the password for game " + id);
+
+			if(password == "" || password == null) {
+				alert("Cannot connect to game. No password provided");
+				return;
+			}
+		}
+
+		gameController.joinGame(id, password);
+	}
+
+	fetchGameList() {
+		let url = "http://" + gameController.server + "/availableGames";
+		$.get(url, function(data, status) {
+			if(status == "success") {
+				this.setState({games: data});
+			} else {
+				console.warn("Failed to load game list");
+			}
+		}.bind(this))
+	}
+
+	/// Convenience
+
+	gameForId(id) {
+		for(var i = 0; i < this.state.games.length; i++) {
+			let game = this.state.games[i];
+
+			if(id == game.id) {
+				return game;
+			}
+		}
+
+		return null;
 	}
 }

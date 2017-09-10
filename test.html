@@ -1,6 +1,7 @@
 <html>
     <head>
 	    <title>Werewolf Client</title>
+	    <link rel="stylesheet" type="text/css" href="css/game.css">
 	    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
@@ -18,8 +19,6 @@
 		<script type="text/babel" src="js/views/board.js"></script>
 		<script type="text/babel" src="js/views/mainView.js"></script>
 		<script type="text/babel">
-			socketController.connect("ws://192.168.1.155:8080/socket");
-
 			$(function() {
 				ReactDOM.render(
 					<MainView/>,
