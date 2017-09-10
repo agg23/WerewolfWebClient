@@ -18,7 +18,7 @@ class Character extends React.Component {
 
 	render() {
 		return (
-			<div onClick={this.handleClick}>
+			<div className="characterCard" onClick={this.handleClick}>
 				{this.state.name}
 			</div>
 		);

@@ -71,7 +71,11 @@ class Board extends React.Component {
 							if(player.id == gameController.userId) {
 								// This card is me
 								nickname += " (Me)";
-								character = gameController.character;
+								if(gameController.lastKnownCharacter != null) {
+									character = gameController.lastKnownCharacter;
+								} else {
+									character = gameController.character;
+								}
 							} else {
 								let seenCharacter = this.state.gameState == "lobby" ? gameController.finalCharacterForPlayerId(player.id) : gameController.seenCharacterForPlayerId(player.id);
 
