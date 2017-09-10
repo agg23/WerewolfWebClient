@@ -27,7 +27,10 @@ class MainView extends React.Component {
 	internalComponent() {
 		switch(this.state.mode) {
 			case "login":
-				return <Login presentingController={this} ref={this.savePresentedReference} />;
+				return (<div ref={this.savePresentedReference}>
+						<Login presentingController={this} />
+						<Register presentingController={this} />
+					</div>);
 			case "connectGame":
 				return (<div ref={this.savePresentedReference}>
 						<JoinGame presentingController={this} />

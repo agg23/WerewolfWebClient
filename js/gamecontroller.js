@@ -27,7 +27,9 @@ class GameController {
 
 		// Register observers
 		socket.parser.registerSuccessResponseObserver("login", this.authenticationCompleted);
+		socket.parser.registerFailureResponseObserver("login", this.authenticationFailed);
 		socket.parser.registerSuccessResponseObserver("register", this.authenticationCompleted);
+		socket.parser.registerFailureResponseObserver("register", this.registrationFailed);
 
 		socket.parser.registerSuccessResponseObserver("hostGame", this.connectedGame);
 		socket.parser.registerSuccessResponseObserver("joinGame", this.connectedGame);
@@ -44,8 +46,12 @@ class GameController {
 		this.socket.send({"command": "login", "username": username, "password": password});
 	}
 
-	register(username, password) {
-		// TODO: Finish
+	register(username, password, nickname) {
+		if(nickname == "") {
+			nickname = null;
+		}
+
+		this.socket.send({"command": "register", "username": username, "password": password, "nickname": nickname});
 	}
 
 	hostGame(name, password, charactersInPlay) {
@@ -201,6 +207,18 @@ class GameController {
 
 		// Update view state
 		this.view.updateMode("connectGame");
+	}
+
+	authenticationFailed(json) {
+		console.warn("Authentication failed");
+
+		alert("Authentication failed. " + json.message);
+	}
+
+	registrationFailed(json) {
+		console.warn("Registration failed");
+
+		alert("Registration failed. " + json.message);
 	}
 
 	connectedGame(json) {
