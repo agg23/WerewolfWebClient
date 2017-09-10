@@ -19,7 +19,7 @@ class HostGame extends React.Component {
 				<input onChange={this.handleGamePasswordChange}/>
 				<div className="characterDisplay">
 					{gameController.availableCharacters.map(function(item, index) {
-						return <Character name={item} id={index} key={index} onClick={this.handleCharacterSelect} />
+						return <Character character={item} id={index} key={index} onClick={this.handleCharacterSelect} />
 					}.bind(this))}
 				</div>
 				<button onClick={this.handleHostGame}>Host Game</button>

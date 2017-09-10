@@ -8,18 +8,28 @@ class Character extends React.Component {
 
 		this.handleClick = this.handleClick.bind(this);
 		
-	    this.state = {name: props.name};
+	    this.state = {character: props.character, userName: props.userName};
 	}
 
 	// Enables updating the component if props changes
 	componentWillReceiveProps(nextProps) {
-		this.setState({name: nextProps.name});  
+		this.setState({character: nextProps.character, userName: nextProps.userName});  
 	}
 
 	render() {
 		return (
-			<div className="characterCard" onClick={this.handleClick}>
-				{this.state.name}
+			<div className="characterContainer">
+				<div className="character" onClick={this.handleClick}>
+					<div className="characterCard" style={{backgroundImage: "url(img/cards/" + this.state.character + ".png)"}}></div>
+					<div className="cardName">{this.state.character}</div>
+					{function(character) {
+						if(character.state.userName != null) {
+							return (<div className="userName">{character.state.userName}</div>);
+						} else {
+							return "";
+						}
+					}(this)}
+				</div>
 			</div>
 		);
 	}

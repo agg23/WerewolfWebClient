@@ -1,5 +1,70 @@
-.characterCard {
+#root {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.characterContainer {
+	flex: 1;
+	position: relative;
 	display: inline-block;
-	background-color: blue;
+}
+
+.characterContainer:first-child {
+	flex: 2;
+}
+
+.characterContainer:last-child {
+	flex: 2;
+}
+
+.character {
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0 0 0 0;
+}
+
+.characterCard {
+	position: relative;
+	display: inline-block;
+	background-size: 100% 100%;
+	/*color: white;*/
+	max-width: 241;
+	max-height: 382;
+	width: 20vw;
+	height: 32vw;
 	margin: 10 10 10 10;
+}
+
+.character .cardName {
+	position: relative;
+	/*width: 100%;*/
+	bottom: 0;
+	font-size: 26px;
+	text-align: center;
+	flex-shrink: 1;
+}
+
+.character .userName {
+	position: relative;
+	/*width: 100%;*/
+	bottom: 0;
+	font-size: 20px;
+	text-align: center;
+}
+
+.nonhumanCharacters {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	width: 100%;
+}
+
+.humanCharacters {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	width: 100%;
 }

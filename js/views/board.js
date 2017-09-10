@@ -41,7 +41,7 @@ class Board extends React.Component {
 							case "lobby":
 								return "Final Results";
 						}}(this.state.gameState)}</p>
-					<div>
+					<div className="nonhumanCharacters">
 						{this.state.players.map(function(player) {
 							if(player.isHuman) {
 								// Ignore human cards
@@ -60,13 +60,10 @@ class Board extends React.Component {
 								character = "unknown";
 							}
 
-							return (<div key={player.id}>
-									<Character name={character} id={player.id} onClick={this.handleSelection} />
-									{nickname}
-								</div>);
+							return (<Character key={player.id} character={character} id={player.id} userName={nickname} onClick={this.handleSelection} />);
 						}.bind(this))}
 					</div>
-					<div>
+					<div className="humanCharacters">
 						{this.state.players.map(function(player) {
 							if(!player.isHuman) {
 								// Ignore nonhuman cards
@@ -96,10 +93,7 @@ class Board extends React.Component {
 								}
 							}
 
-							return (<div key={player.id}>
-									<Character name={character} id={player.id} onClick={this.handleSelection} />
-									{nickname}
-								</div>);
+							return (<Character key={player.id} character={character} id={player.id} userName={nickname} onClick={this.handleSelection} />);
 						}.bind(this))}
 					</div>
 				</div>
