@@ -82,6 +82,20 @@ class Parser {
 		this.failureResponseObservers[command] = observers;
 	}
 
+	removeSuccessResponseObserver(command, observer) {
+		var observers = this.successResponseObservers[command];
+		let index = observers.indexOf(observer);
+
+		this.successResponseObservers[command] = this.removeFromArray(observers, index);
+	}
+
+	removeFailureResponseObserver(command, observer) {
+		var observers = this.failureResponseObservers[command];
+		let index = observers.indexOf(observer);
+
+		this.failureResponseObservers[command] = this.removeFromArray(observers, index);
+	}
+
 	notifyResponseObservers(success, command, json) {
 		var responseObservers;
 		if(success) {
@@ -98,4 +112,14 @@ class Parser {
 			}
 		}
 	}
+
+	/// Convenience
+
+	removeFromArray(array, index) {
+	    if (index !== -1) {
+	        array.splice(index, 1);
+	    }
+	    return array;
+	}
+
 }

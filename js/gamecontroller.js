@@ -75,14 +75,11 @@ class GameController {
 	}
 
 	submitSelections(selections) {
-		var selectionType;
+		var selectionType = "";
 		if(selections.length == 1) {
 			selectionType = "singleSelection";
 		} else if (selections.length == 2) {
 			selectionType = "doubleSelection";
-		} else {
-			console.error("Attempted to send incorrect number of actions");
-			return;
 		}
 
 	   	this.socket.send({"command": "select", "type": selectionType, "selections": selections, "rotation": null});

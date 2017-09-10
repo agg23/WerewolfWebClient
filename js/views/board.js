@@ -9,8 +9,21 @@ class Board extends React.Component {
 		this.handleSelection = this.handleSelection.bind(this);
 		this.handleExitLobby = this.handleExitLobby.bind(this);
 
+		this.selectionSuccess = this.selectionSuccess.bind(this);
+		this.selectionFailure = this.selectionFailure.bind(this);
+
 		this.state = {name: gameController.gameName, id: gameController.gameId, gameState: gameController.gameState, players: this.sortedPlayers(), charactersInPlay: gameController.charactersInPlay, 
 			seenAssignments: gameController.seenAssignments, selectedPlayers: []};
+	}
+
+	componentDidMount() {
+		gameController.socket.parser.registerSuccessResponseObserver("select", this.selectionSuccess);
+		gameController.socket.parser.registerFailureResponseObserver("select", this.selectionFailure);
+	}
+
+	componentWillUnmount() {
+		gameController.socket.parser.removeSuccessResponseObserver("select", this.selectionSuccess);
+		gameController.socket.parser.removeFailureResponseObserver("select", this.selectionFailure);
 	}
 
 	render() {
@@ -167,6 +180,17 @@ class Board extends React.Component {
 			seenAssignments: gameController.seenAssignments});
 	}
 
+	/// Notifications
+
+	selectionSuccess(json) {
+		console.log("Selection completed successfully");
+		this.setState({selectedPlayers: []});
+	}
+
+	selectionFailure(json) {
+		alert("Selection failed");
+	}
+
 	/// Convenience
 
 	sortedPlayers() {
@@ -174,8 +198,6 @@ class Board extends React.Component {
 			return lhs.id - rhs.id;
 		});
 	}
-
-	/// Convenience
 
 	removeFromArray(array, index) {
 	    if (index !== -1) {
