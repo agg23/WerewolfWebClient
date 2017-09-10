@@ -75,6 +75,16 @@ class GameController {
 		this.socket.send({"command": "joinGame", "id": id, "password": password});
 	}
 
+	leaveGame() {
+		if(this.gameId == null) {
+			console.warn("Attempted to leave game when not connected");
+			return;
+		}
+
+		this.socket.send({"command": "leaveGame"});
+		this.view.updateMode("connectGame");
+	}
+
 	readyUp() {
 		this.socket.send({"command": "ready"});
 	}

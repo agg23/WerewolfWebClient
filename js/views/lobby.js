@@ -50,7 +50,7 @@ class Lobby extends React.Component {
 	}
 
 	handleLeaveGame(event) {
-		// TODO: Finish
+		gameController.leaveGame();
 	}
 
 	updateGameState() {
